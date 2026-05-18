@@ -6,7 +6,7 @@
 
 import Foundation
 
-// MARK: - 1️⃣ Описание программы
+// MARK: - 1️⃣ Описание программы //
 print("✅ StepCalculator 📋")
 print("Пользователь вводит команду (add, sub, mul, div).")
 print("Программа запрашивает два числа, вычисляет результат и завершается по exit")
@@ -19,8 +19,8 @@ enum Command: String {
     case div = "div"
     case exit = "exit"
     
-    // 2️⃣.1 Метод "выполнить команду"
-    func perform(_ a: Double, _ b: Double) throws -> Double {
+    // 2️⃣.1 Метод Выполняет команду над двумя числами.
+    func perform(_ a: Double, _ b: Double) throws -> Double { // Переиспользование кода (DRY) + Сигнатура функции сама говорит: м.б. ошибка perform ВНУТРИ enum
         switch self {
         case .add:
             return a + b
@@ -29,18 +29,18 @@ enum Command: String {
         case .mul:
             return a * b
         case .div:
-            if b == 0 {
-                throw CalculationError.divisionByZero
+            if b == 0 { // Защита от краша
+                throw CalculationError.divisionByZero // Единый механизм ошибок
             } else {
                 return a / b
             }
         case .exit:
-            throw CalculationError.invalidOperation
+            throw CalculationError.invalidOperation // Единый механизм ошибок
         }
     }
 }
 
-enum CalculationError: Error, LocalizedError {
+enum CalculationError: Error, LocalizedError { // Ошибки — отдельный ТИП (профи подход)
     case divisionByZero
     case invalidOperation
 
@@ -55,7 +55,7 @@ enum CalculationError: Error, LocalizedError {
 }
 
 // MARK: - 3️⃣ Вспомогательная функция безопасного ввода чисел
-func readDouble(prompt: String) -> Double? {
+func readDouble(prompt: String) -> Double? { // Не падает при неверном вводе
     print(prompt, terminator: "")
     guard let input = readLine()?.trimmingCharacters(in: .whitespaces),
           !input.isEmpty else {
@@ -64,8 +64,8 @@ func readDouble(prompt: String) -> Double? {
     return Double(input)
 }
 
-// MARK: - 4️⃣ Основная программа
-loop: while true {
+// MARK: - 4️⃣ Основная программа: 4️⃣.1 – 4️⃣.7    Пошаговое описание алгоритма
+loop: while true { // loop: while true + break loop -> метка для выхода из цикла
     print("\n> ", terminator: "")
     guard let input = readLine()?.trimmingCharacters(in: .whitespaces),
           !input.isEmpty else {
@@ -78,12 +78,12 @@ loop: while true {
     }
     
     switch command {
-    case .exit:
+    case .exit: // Защита от неправильного вызова 
         print("Bye, bro!")
         break loop
         
     default:
-        guard let a = readDouble(prompt: "Enter first number: ") else {
+        guard let a = readDouble(prompt: "Enter first number: ") else { // Ранний выход при ошибке
             print("❌ Invalid number")
             continue
         }
@@ -92,7 +92,7 @@ loop: while true {
             continue
         }
         
-        do {
+        do { // Разделение логики вычисления и обработки ошибок
             let result = try command.perform(a, b)
             print("Result: \(result)")
         } catch let calculationError as CalculationError {
